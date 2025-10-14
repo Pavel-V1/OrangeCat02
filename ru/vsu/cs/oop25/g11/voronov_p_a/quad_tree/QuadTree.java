@@ -1,42 +1,50 @@
 package ru.vsu.cs.oop25.g11.voronov_p_a.quad_tree;
 
-import com.sun.source.tree.BinaryTree;
 import java.util.function.Function;
 
-public class QuadTree<T> implements BinaryTree<T> {
+public class QuadTree<T> {
 
-    protected class SimpleTreeNode implements BinaryTree.TreeNode<T> {
+    protected class QTreeNode {
         public T value;
-        public SimpleTreeNode left;
-        public SimpleTreeNode right;
+        public QTreeNode left;
+        public QTreeNode right;
+        public QTreeNode front;
+        public QTreeNode back;
 
-        public SimpleTreeNode(T value, SimpleTreeNode left, SimpleTreeNode right) {
+        public QTreeNode(T value, QTreeNode left, QTreeNode right, QTreeNode front, QTreeNode back) {
             this.value = value;
             this.left = left;
             this.right = right;
+            this.front = front;
+            this.back = back;
         }
 
-        public SimpleTreeNode(T value) {
-            this(value, null, null);
+        public QTreeNode(T value) {
+            this(value, null, null, null, null);
         }
 
-        @Override
         public T getValue() {
             return value;
         }
 
-        @Override
-        public TreeNode<T> getLeft() {
+        public QTreeNode getLeft() {
             return left;
         }
 
-        @Override
-        public TreeNode<T> getRight() {
+        public QTreeNode getRight() {
             return right;
+        }
+
+        public QTreeNode getFront() {
+            return front;
+        }
+
+        public QTreeNode getBack() {
+            return back;
         }
     }
 
-    protected SimpleTreeNode root = null;
+    protected QTreeNode root = null;
 
     protected Function<String, T> fromStrFunc;
     protected Function<T, String> toStrFunc;
@@ -54,8 +62,7 @@ public class QuadTree<T> implements BinaryTree<T> {
         this(null);
     }
 
-    @Override
-    public TreeNode<T> getRoot() {
+    public QTreeNode getRoot() {
         return root;
     }
 
@@ -113,9 +120,9 @@ public class QuadTree<T> implements BinaryTree<T> {
         return value;
     }
 
-    private SimpleTreeNode fromBracketStr(String bracketStr, IndexWrapper iw) throws Exception {
+    private QTreeNode fromBracketStr(String bracketStr, IndexWrapper iw) throws Exception {
         T parentValue = readValue(bracketStr, iw);
-        SimpleTreeNode parentNode = new SimpleTreeNode(parentValue);
+        QTreeNode parentNode = new QTreeNode(parentValue);
         if (bracketStr.charAt(iw.index) == '(') {
             iw.index++;
             skipSpaces(bracketStr, iw);
@@ -142,11 +149,10 @@ public class QuadTree<T> implements BinaryTree<T> {
 
     public void fromBracketNotation(String bracketStr) throws Exception {
         IndexWrapper iw = new IndexWrapper();
-        SimpleTreeNode root = fromBracketStr(bracketStr, iw);
+        QTreeNode root = fromBracketStr(bracketStr, iw);
         if (iw.index < bracketStr.length()) {
             throw new Exception(String.format("Ожидался конец строки [%d]", iw.index));
         }
         this.root = root;
     }
-}
 }
