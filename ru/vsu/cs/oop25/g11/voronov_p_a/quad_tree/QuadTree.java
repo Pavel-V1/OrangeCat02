@@ -1,5 +1,7 @@
 package ru.vsu.cs.oop25.g11.voronov_p_a.quad_tree;
 
+import java.awt.*;
+import java.awt.geom.Point2D;
 import java.util.function.Function;
 
 public class QuadTree<T> {
@@ -45,6 +47,75 @@ public class QuadTree<T> {
     }
 
     protected QTreeNode root = null;
+
+    public T getMinHorizontal(QTreeNode qtn) {
+        if (root == null) {
+            return null;
+        } else {
+            QTreeNode cur = qtn;
+            while (cur.left != null) {
+                cur = cur.left;
+            }
+            return cur.value;
+        }
+    }
+
+    public T getMaxHorizontal(QTreeNode qtn) {
+        if (root == null) {
+            return null;
+        } else {
+            QTreeNode cur = qtn;
+            while (cur.right != null) {
+                cur = cur.right;
+            }
+            return cur.value;
+        }
+    }
+
+    public T getMinVertical(QTreeNode qtn) {
+        if (root == null) {
+            return null;
+        } else {
+            QTreeNode cur = qtn;
+            while (cur.back != null) {
+                cur = cur.back;
+            }
+            return cur.value;
+        }
+    }
+
+    public T getMaxVertical(QTreeNode qtn) {
+        if (root == null) {
+            return null;
+        } else {
+            QTreeNode cur = qtn;
+            while (cur.front != null) {
+                cur = cur.front;
+            }
+            return cur.value;
+        }
+    }
+
+    public void setValue(T t) {
+        QTreeNode newQNode = new QTreeNode(t);
+        if (root == null) {
+            root = newQNode;
+        } else {
+            QTreeNode cur = root;
+
+        }
+
+    }
+
+    public boolean getValue() {
+
+        return false;
+    }
+
+    public boolean deleteValue() {
+
+        return false;
+    }
 
     protected Function<String, T> fromStrFunc;
     protected Function<T, String> toStrFunc;
