@@ -1,32 +1,48 @@
 package ru.vsu.cs.oop25.g11.voronov_p_a.quad_tree;
 
-import java.awt.*;
-import java.awt.geom.Point2D;
-import java.util.function.Function;
+import java.awt.color.ICC_ColorSpace;
+import java.util.Comparator;
 
 public class QuadTree<T> {
 
     protected class QTreeNode {
         public T value;
-        public QTreeNode left;
-        public QTreeNode right;
-        public QTreeNode front;
-        public QTreeNode back;
+        public QTreeNode left_back;
+        public QTreeNode left_front;
+        public QTreeNode right_back;
+        public QTreeNode right_front;
 
         public QTreeNode(T value, QTreeNode left, QTreeNode right, QTreeNode front, QTreeNode back) {
             this.value = value;
-            this.left = left;
-            this.right = right;
-            this.front = front;
-            this.back = back;
+            this.left_back = left_back;
+            this.left_front = left_front;
+            this.right_back = right_back;
+            this.right_front = right_front;
         }
 
         public QTreeNode(T value) {
             this(value, null, null, null, null);
         }
 
-        public T getValue() {
-            return value;
+        public QTreeNode get(T t) {
+            if (root == null) {
+                return null;
+            } else if (root.value1 == v1) {
+                return getv2(root, v2);
+            } else if (v1 < root.value1) {
+                QTreeNode cur = root;
+                while (v1 != cur.left.value1 && v1 != null) {
+                    cur = cur.left;
+                }
+            }
+        }
+
+        protected QTreeNode getv2(QTreeNode cur, T2 v) {
+            if (v == cur.value2) {
+                return cur;
+            } else if (v > cur.value2) {
+
+            }
         }
 
         public QTreeNode getLeft() {
@@ -102,7 +118,9 @@ public class QuadTree<T> {
             root = newQNode;
         } else {
             QTreeNode cur = root;
-
+            if (byX.compare(t, root.value) < 0 && byY.compare(t, root.value) < 0) {
+                cur = cur.left_back;
+            }
         }
 
     }
@@ -120,9 +138,15 @@ public class QuadTree<T> {
     protected Function<String, T> fromStrFunc;
     protected Function<T, String> toStrFunc;
 
-    public QuadTree(Function<String, T> fromStrFunc, Function<T, String> toStrFunc) {
+
+    private Comparator<T> byX;
+    private Comparator<T> byY;
+
+    public QuadTree( Comparator<T> x, Comparator<T> y, Function<String, T> fromStrFunc, Function<T, String> toStrFunc) {
         this.fromStrFunc = fromStrFunc;
         this.toStrFunc = toStrFunc;
+
+
     }
 
     public QuadTree(Function<String, T> fromStrFunc) {

@@ -7,6 +7,6 @@ public class Tests {
     @Test
     public void testQuadTree() {
         QuadTree qt = new QuadTree();
-
+        assertNull(qt.root);
     }
 }
