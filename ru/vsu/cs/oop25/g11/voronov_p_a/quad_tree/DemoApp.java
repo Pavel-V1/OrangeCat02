@@ -8,17 +8,17 @@ public class DemoApp {
 
         class Point{double x; double y;}
 
-        QuadTree<Point> qt =new QuadTree<>(new Comparator<Point>() {
-            @Override
-            public int compare(Point o1, Point o2) {
-                return o1.x ????o2.x;
-            }
-        }, new Comparator<Point>() {
-            @Override
-            public int compare(Point o1, Point o2) {
-                return o1.y ???? o2.y;
-            }
-        }) ;
+//        QuadTree<Point> qt = new QuadTree<>(new Comparator<Point>() {
+//            @Override
+//            public int compare(Point o1, Point o2) {
+//                return o1.x ???? o2.x;
+//            }
+//        }, new Comparator<Point>() {
+//            @Override
+//            public int compare(Point o1, Point o2) {
+//                return o1.y ???? o2.y;
+//            }
+//        }) ;
 
         QuadTree<String> qs = new QuadTree<>(new Comparator<String>() {
             @Override
@@ -30,7 +30,7 @@ public class DemoApp {
             public int compare(String o1, String o2) {
                 return o1.compareTo(o2);
             }
-        })
+        });
 
     }
 }

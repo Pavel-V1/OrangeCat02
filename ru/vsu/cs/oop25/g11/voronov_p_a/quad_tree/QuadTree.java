@@ -1,129 +1,157 @@
 package ru.vsu.cs.oop25.g11.voronov_p_a.quad_tree;
 
-import java.awt.color.ICC_ColorSpace;
 import java.util.Comparator;
 
 public class QuadTree<T> {
 
+    public QuadTree(Comparator<String> stringComparator, Comparator<String> stringComparator1) {
+
+    }
+
     protected class QTreeNode {
         public T value;
-        public QTreeNode left_back;
-        public QTreeNode left_front;
-        public QTreeNode right_back;
-        public QTreeNode right_front;
+        public QTreeNode left_down;
+        public QTreeNode left_up;
+        public QTreeNode right_down;
+        public QTreeNode right_up;
 
         public QTreeNode(T value, QTreeNode left, QTreeNode right, QTreeNode front, QTreeNode back) {
             this.value = value;
-            this.left_back = left_back;
-            this.left_front = left_front;
-            this.right_back = right_back;
-            this.right_front = right_front;
+            this.left_down = left_down;
+            this.left_up = left_up;
+            this.right_down = right_down;
+            this.right_up = right_up;
         }
 
         public QTreeNode(T value) {
             this(value, null, null, null, null);
         }
 
-        public QTreeNode get(T t) {
+        public QTreeNode getQTreeNode(T t) {
             if (root == null) {
                 return null;
-            } else if (root.value1 == v1) {
-                return getv2(root, v2);
-            } else if (v1 < root.value1) {
+            } else if (t.equals(root.value)) {
+                return root;
+            } else {
                 QTreeNode cur = root;
-                while (v1 != cur.left.value1 && v1 != null) {
-                    cur = cur.left;
+                while (cur.value != null && cur.value != t) {
+                    if (byX.compare(t, cur.value) < 0) {
+                        if (byY.compare(t, cur.value) >= 0) {
+                            cur = cur.left_up;
+                        } else if (byY.compare(t, cur.value) < 0) {
+                            cur = cur.left_down;
+                        }
+                    } else if (byX.compare(t, cur.value) >= 0) {
+                        if (byY.compare(t, cur.value) >= 0) {
+                            cur = cur.right_up;
+                        } else if (byY.compare(t, cur.value) < 0) {
+                            cur = cur.right_down;
+                        }
+                    }
+                }
+                if (cur.value == null) {
+                    return null;
+                } else {
+                    return cur;
                 }
             }
         }
 
-        protected QTreeNode getv2(QTreeNode cur, T2 v) {
-            if (v == cur.value2) {
-                return cur;
-            } else if (v > cur.value2) {
+        public T getValue(QTreeNode q) {
 
+        }
+
+        public void setValue(T t) {
+            QTreeNode newQNode = new QTreeNode(t);
+            if (root == null) {
+                root = newQNode;
+            } else {
+                QTreeNode cur = root;
+                while (cur.value != null) {
+                    if (byX.compare(t, cur.value) < 0) {
+                        if (byY.compare(t, cur.value) >= 0) {
+                            cur = cur.left_up;
+                        } else if (byY.compare(t, cur.value) < 0) {
+                            cur = cur.left_down;
+                        }
+                    } else if (byX.compare(t, cur.value) >= 0) {
+                        if (byY.compare(t, cur.value) >= 0) {
+                            cur = cur.right_up;
+                        } else if (byY.compare(t, cur.value) < 0) {
+                            cur = cur.right_down;
+                        }
+                    }
+                    cur = newQNode;
+                }
             }
         }
 
-        public QTreeNode getLeft() {
-            return left;
+        public QTreeNode getLeft_back(QTreeNode q) {
+            return q.left_down;
         }
 
-        public QTreeNode getRight() {
-            return right;
+        public QTreeNode getRight_back(QTreeNode q) {
+            return q.right_down;
         }
 
-        public QTreeNode getFront() {
-            return front;
+        public QTreeNode getLeft_front(QTreeNode q) {
+            return q.left_up;
         }
 
-        public QTreeNode getBack() {
-            return back;
+        public QTreeNode getRight_front(QTreeNode q) {
+            return q.right_up;
         }
     }
 
     protected QTreeNode root = null;
 
-    public T getMinHorizontal(QTreeNode qtn) {
-        if (root == null) {
-            return null;
-        } else {
-            QTreeNode cur = qtn;
-            while (cur.left != null) {
-                cur = cur.left;
-            }
-            return cur.value;
-        }
-    }
-
-    public T getMaxHorizontal(QTreeNode qtn) {
-        if (root == null) {
-            return null;
-        } else {
-            QTreeNode cur = qtn;
-            while (cur.right != null) {
-                cur = cur.right;
-            }
-            return cur.value;
-        }
-    }
-
-    public T getMinVertical(QTreeNode qtn) {
-        if (root == null) {
-            return null;
-        } else {
-            QTreeNode cur = qtn;
-            while (cur.back != null) {
-                cur = cur.back;
-            }
-            return cur.value;
-        }
-    }
-
-    public T getMaxVertical(QTreeNode qtn) {
-        if (root == null) {
-            return null;
-        } else {
-            QTreeNode cur = qtn;
-            while (cur.front != null) {
-                cur = cur.front;
-            }
-            return cur.value;
-        }
-    }
-
-    public void setValue(T t) {
-        QTreeNode newQNode = new QTreeNode(t);
-        if (root == null) {
-            root = newQNode;
-        } else {
-            QTreeNode cur = root;
-            if (byX.compare(t, root.value) < 0 && byY.compare(t, root.value) < 0) {
-                cur = cur.left_back;
-            }
-        }
-
-    }
+//    public T getMinHorizontal(QTreeNode qtn) {
+//        if (root == null) {
+//            return null;
+//        } else {
+//            QTreeNode cur = qtn;
+//            while (cur.left != null) {
+//                cur = cur.left;
+//            }
+//            return cur.value;
+//        }
+//    }
+//
+//    public T getMaxHorizontal(QTreeNode qtn) {
+//        if (root == null) {
+//            return null;
+//        } else {
+//            QTreeNode cur = qtn;
+//            while (cur.right != null) {
+//                cur = cur.right;
+//            }
+//            return cur.value;
+//        }
+//    }
+//
+//    public T getMinVertical(QTreeNode qtn) {
+//        if (root == null) {
+//            return null;
+//        } else {
+//            QTreeNode cur = qtn;
+//            while (cur.back != null) {
+//                cur = cur.back;
+//            }
+//            return cur.value;
+//        }
+//    }
+//
+//    public T getMaxVertical(QTreeNode qtn) {
+//        if (root == null) {
+//            return null;
+//        } else {
+//            QTreeNode cur = qtn;
+//            while (cur.front != null) {
+//                cur = cur.front;
+//            }
+//            return cur.value;
+//        }
+//    }
 
     public boolean getValue() {
 
