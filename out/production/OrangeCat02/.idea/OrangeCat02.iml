@@ -23,5 +23,6 @@
         <SOURCES />
       </library>
     </orderEntry>
+    <orderEntry type="library" name="github.cschabl.cdi.unit.junit5" level="project" />
   </component>
 </module>

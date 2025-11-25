@@ -4,8 +4,6 @@ import java.util.Comparator;
 
 public class DemoApp {
     public static void main(String[] args) {
-        QuadTree quadTree = new QuadTree();
-
         class Point{double x; double y;}
 
 //        QuadTree<Point> qt = new QuadTree<>(new Comparator<Point>() {

@@ -4,7 +4,7 @@ import java.util.Comparator;
 
 public class QuadTree<T> {
 
-    public QuadTree(Comparator<String> stringComparator, Comparator<String> stringComparator1) {
+    public QuadTree(Comparator<T> comparator1, Comparator<T> comparator2) {
 
     }
 
@@ -15,7 +15,7 @@ public class QuadTree<T> {
         public QTreeNode right_down;
         public QTreeNode right_up;
 
-        public QTreeNode(T value, QTreeNode left, QTreeNode right, QTreeNode front, QTreeNode back) {
+        public QTreeNode(T value, QTreeNode left_down, QTreeNode left_up, QTreeNode right_down, QTreeNode right_up) {
             this.value = value;
             this.left_down = left_down;
             this.left_up = left_up;
@@ -25,65 +25,6 @@ public class QuadTree<T> {
 
         public QTreeNode(T value) {
             this(value, null, null, null, null);
-        }
-
-        public QTreeNode getQTreeNode(T t) {
-            if (root == null) {
-                return null;
-            } else if (t.equals(root.value)) {
-                return root;
-            } else {
-                QTreeNode cur = root;
-                while (cur.value != null && cur.value != t) {
-                    if (byX.compare(t, cur.value) < 0) {
-                        if (byY.compare(t, cur.value) >= 0) {
-                            cur = cur.left_up;
-                        } else if (byY.compare(t, cur.value) < 0) {
-                            cur = cur.left_down;
-                        }
-                    } else if (byX.compare(t, cur.value) >= 0) {
-                        if (byY.compare(t, cur.value) >= 0) {
-                            cur = cur.right_up;
-                        } else if (byY.compare(t, cur.value) < 0) {
-                            cur = cur.right_down;
-                        }
-                    }
-                }
-                if (cur.value == null) {
-                    return null;
-                } else {
-                    return cur;
-                }
-            }
-        }
-
-        public T getValue(QTreeNode q) {
-
-        }
-
-        public void setValue(T t) {
-            QTreeNode newQNode = new QTreeNode(t);
-            if (root == null) {
-                root = newQNode;
-            } else {
-                QTreeNode cur = root;
-                while (cur.value != null) {
-                    if (byX.compare(t, cur.value) < 0) {
-                        if (byY.compare(t, cur.value) >= 0) {
-                            cur = cur.left_up;
-                        } else if (byY.compare(t, cur.value) < 0) {
-                            cur = cur.left_down;
-                        }
-                    } else if (byX.compare(t, cur.value) >= 0) {
-                        if (byY.compare(t, cur.value) >= 0) {
-                            cur = cur.right_up;
-                        } else if (byY.compare(t, cur.value) < 0) {
-                            cur = cur.right_down;
-                        }
-                    }
-                    cur = newQNode;
-                }
-            }
         }
 
         public QTreeNode getLeft_back(QTreeNode q) {
@@ -103,7 +44,148 @@ public class QuadTree<T> {
         }
     }
 
+    private Comparator<T> byX;
+    private Comparator<T> byY;
+
+    private QTreeNode findQTNode(QTreeNode qtNode, T t) {
+        QTreeNode cur = qtNode;
+        while (cur.value != t) {
+            if (byX.compare(t, cur.value) >= 0) {
+                if (byY.compare(t, cur.value) >= 0) {
+                    if (cur.right_up != null) {
+                        cur = cur.right_up;
+                    } else {
+                        break;
+                    }
+                } else {
+                    if (cur.right_down != null) {
+                        cur = cur.right_down;
+                    } else {
+                        break;
+                    }
+                }
+            } else {
+                if (byY.compare(t, cur.value) >= 0) {
+                    if (cur.left_up != null) {
+                        cur = cur.left_up;
+                    } else {
+                        break;
+                    }
+                } else {
+                    if (cur.left_down != null) {
+                        cur = cur.left_down;
+                    } else {
+                        break;
+                    }
+                }
+            }
+        }
+        return cur;
+    }
+
+    public QTreeNode getQTreeNode(T t) {
+        if (root == null) {
+            return null;
+        } else if (t.equals(root.value)) {
+            return root;
+        } else {
+            QTreeNode cur = findQTNode(root, t);
+            if (cur.value.equals(t)) {
+                return cur;
+            } else {
+                return null;
+            }
+        }
+    }
+
+    public T getValue(QTreeNode q) {
+        return q.value;
+    }
+
+    public void setValue(T t) {
+        QTreeNode newQNode = new QTreeNode(t);
+        if (root == null) {
+            root = newQNode;
+        } else {
+            QTreeNode cur = findQTNode(root, t);
+            if (!cur.value.equals(t)) {
+                if (byX.compare(t, cur.value) >= 0) {
+                    if (byY.compare(t, cur.value) >= 0) {
+                        cur.right_up = newQNode;
+                    } else {
+                        cur.right_down = newQNode;
+                    }
+                } else {
+                    if (byY.compare(t, cur.value) >= 0) {
+                        cur.left_up = newQNode;
+                    } else {
+                        cur.left_down = newQNode;
+                    }
+                }
+            }
+//                else {
+//                    cur.right_up = newQNode; // т.к. byX = 0 -> right и byY = 0 -> up
+//                }
+        }
+
+
+    }
+
+    public boolean deleteValue(T t) {
+        QTreeNode cur = root;
+        QTreeNode prev = null;
+        while (cur.value != t) {
+            prev = cur;
+            if (byX.compare(t, cur.value) >= 0) {
+                if (byY.compare(t, cur.value) >= 0) {
+                    if (cur.right_up != null) {
+                        cur = cur.right_up;
+                    } else {
+                        break;
+                    }
+                } else {
+                    if (cur.right_down != null) {
+                        cur = cur.right_down;
+                    } else {
+                        break;
+                    }
+                }
+            } else {
+                if (byY.compare(t, cur.value) >= 0) {
+                    if (cur.left_up != null) {
+                        cur = cur.left_up;
+                    } else {
+                        break;
+                    }
+                } else {
+                    if (cur.left_down != null) {
+                        cur = cur.left_down;
+                    } else {
+                        break;
+                    }
+                }
+            }
+        }
+        if (prev.left_down.value == t) {
+            prev.left_down = null;
+            return true;
+        } else if (prev.left_up.value == t) {
+            prev.left_up = null;
+            return true;
+        } else if (prev.right_up.value == t) {
+            prev.right_up = null;
+            return true;
+        } else if (prev.right_down.value == t) {
+            prev.right_down = null;
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     protected QTreeNode root = null;
+
+
 
 //    public T getMinHorizontal(QTreeNode qtn) {
 //        if (root == null) {
@@ -152,130 +234,4 @@ public class QuadTree<T> {
 //            return cur.value;
 //        }
 //    }
-
-    public boolean getValue() {
-
-        return false;
-    }
-
-    public boolean deleteValue() {
-
-        return false;
-    }
-
-    protected Function<String, T> fromStrFunc;
-    protected Function<T, String> toStrFunc;
-
-
-    private Comparator<T> byX;
-    private Comparator<T> byY;
-
-    public QuadTree( Comparator<T> x, Comparator<T> y, Function<String, T> fromStrFunc, Function<T, String> toStrFunc) {
-        this.fromStrFunc = fromStrFunc;
-        this.toStrFunc = toStrFunc;
-
-
-    }
-
-    public QuadTree(Function<String, T> fromStrFunc) {
-        this(fromStrFunc, Object::toString);
-    }
-
-    public QuadTree() {
-        this(null);
-    }
-
-    public QTreeNode getRoot() {
-        return root;
-    }
-
-    public void clear() {
-        root = null;
-    }
-
-    private T fromStr(String s) throws Exception {
-        s = s.trim();
-        if (s.length() > 0 && s.charAt(0) == '"') {
-            s = s.substring(1);
-        }
-        if (s.length() > 0 && s.charAt(s.length() - 1) == '"') {
-            s = s.substring(0, s.length() - 1);
-        }
-        if (fromStrFunc == null) {
-            throw new Exception("Не определена функция конвертации строки в T");
-        }
-        return fromStrFunc.apply(s);
-    }
-
-    private static class IndexWrapper {
-        public int index = 0;
-    }
-
-    private void skipSpaces(String bracketStr, IndexWrapper iw) {
-        while (iw.index < bracketStr.length() && Character.isWhitespace(bracketStr.charAt(iw.index))) {
-            iw.index++;
-        }
-    }
-
-    private T readValue(String bracketStr, IndexWrapper iw) throws Exception {
-        // пропуcкаем возможные пробелы
-        skipSpaces(bracketStr, iw);
-        if (iw.index >= bracketStr.length()) {
-            return null;
-        }
-        int from = iw.index;
-        boolean quote = bracketStr.charAt(iw.index) == '"';
-        if (quote) {
-            iw.index++;
-        }
-        while (iw.index < bracketStr.length() && (
-                quote && bracketStr.charAt(iw.index) != '"' ||
-                        !quote && !Character.isWhitespace(bracketStr.charAt(iw.index)) && "(),".indexOf(bracketStr.charAt(iw.index)) < 0
-        )) {
-            iw.index++;
-        }
-        if (quote && bracketStr.charAt(iw.index) == '"') {
-            iw.index++;
-        }
-        String valueStr = bracketStr.substring(from, iw.index);
-        T value = fromStr(valueStr);
-        skipSpaces(bracketStr, iw);
-        return value;
-    }
-
-    private QTreeNode fromBracketStr(String bracketStr, IndexWrapper iw) throws Exception {
-        T parentValue = readValue(bracketStr, iw);
-        QTreeNode parentNode = new QTreeNode(parentValue);
-        if (bracketStr.charAt(iw.index) == '(') {
-            iw.index++;
-            skipSpaces(bracketStr, iw);
-            if (bracketStr.charAt(iw.index) != ',') {
-                parentNode.left = fromBracketStr(bracketStr, iw);
-                skipSpaces(bracketStr, iw);
-            }
-            if (bracketStr.charAt(iw.index) == ',') {
-                iw.index++;
-                skipSpaces(bracketStr, iw);
-            }
-            if (bracketStr.charAt(iw.index) != ')') {
-                parentNode.right = fromBracketStr(bracketStr, iw);
-                skipSpaces(bracketStr, iw);
-            }
-            if (bracketStr.charAt(iw.index) != ')') {
-                throw new Exception(String.format("Ожидалось ')' [%d]", iw.index));
-            }
-            iw.index++;
-        }
-
-        return parentNode;
-    }
-
-    public void fromBracketNotation(String bracketStr) throws Exception {
-        IndexWrapper iw = new IndexWrapper();
-        QTreeNode root = fromBracketStr(bracketStr, iw);
-        if (iw.index < bracketStr.length()) {
-            throw new Exception(String.format("Ожидался конец строки [%d]", iw.index));
-        }
-        this.root = root;
-    }
 }
