@@ -1,30 +1,35 @@
 package ru.vsu.cs.oop25.g11.voronov_p_a.quad_tree;
 
-import java.awt.*;
 import java.util.Comparator;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.assertNull;
 
 public class DemoApp {
     public static void main(String[] args) {
         class Point{double x; double y;}
 
-        QuadTree<java.awt.Point> qt = new QuadTree<>(new Comparator<java.awt.Point>() {
+//        QuadTree<Point> qt = new QuadTree<>(new Comparator<Point>() {
+//            @Override
+//            public int compare(Point o1, Point o2) {
+//                return o1.x ???? o2.x;
+//            }
+//        }, new Comparator<Point>() {
+//            @Override
+//            public int compare(Point o1, Point o2) {
+//                return o1.y ???? o2.y;
+//            }
+//        }) ;
+
+        QuadTree<String> qs = new QuadTree<>(new Comparator<String>() {
             @Override
-            public int compare(java.awt.Point o1, java.awt.Point o2) {
-                return o1.x - o2.x;
+            public int compare(String o1, String o2) {
+                return o1.length() - o2.length();
             }
-        }, new Comparator<java.awt.Point>() {
+        }, new Comparator<String>() {
             @Override
-            public int compare(java.awt.Point o1, java.awt.Point o2) {
-                return o1.y - o2.y;
+            public int compare(String o1, String o2) {
+                return o1.compareTo(o2);
             }
         });
 
-        qt.setValue(new java.awt.Point(2, 4));
-        assertTrue(qt.deleteValue(new java.awt.Point(2, 4)));
-        assertNull(qt.getQTreeNode(new java.awt.Point(2, 4)));
-        assertNull(qt.root);
+        //
     }
 }

@@ -45,6 +45,8 @@ public class QuadTree<T> {
         }
     }
 
+    protected QTreeNode root = null;
+
     private Comparator<T> byX;
     private Comparator<T> byY;
 
@@ -128,8 +130,6 @@ public class QuadTree<T> {
 //                    cur.right_up = newQNode; // т.к. byX = 0 -> right и byY = 0 -> up
 //                }
         }
-
-
     }
 
     public void clearTree() {
@@ -182,10 +182,6 @@ public class QuadTree<T> {
             }
         }
     }
-
-    protected QTreeNode root = null;
-
-
 
 //    public T getMinHorizontal(QTreeNode qtn) {
 //        if (root == null) {
