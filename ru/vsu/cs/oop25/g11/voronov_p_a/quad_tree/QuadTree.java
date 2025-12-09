@@ -5,7 +5,8 @@ import java.util.Comparator;
 public class QuadTree<T> {
 
     public QuadTree(Comparator<T> comparator1, Comparator<T> comparator2) {
-
+        this.byX = comparator1;
+        this.byY = comparator2;
     }
 
     protected class QTreeNode {
@@ -131,55 +132,54 @@ public class QuadTree<T> {
 
     }
 
+    public void clearTree() {
+        root = null;
+    }
+
     public boolean deleteValue(T t) {
-        QTreeNode cur = root;
-        QTreeNode prev = null;
-        while (cur.value != t) {
-            prev = cur;
-            if (byX.compare(t, cur.value) >= 0) {
-                if (byY.compare(t, cur.value) >= 0) {
-                    if (cur.right_up != null) {
-                        cur = cur.right_up;
-                    } else {
-                        break;
-                    }
-                } else {
-                    if (cur.right_down != null) {
-                        cur = cur.right_down;
-                    } else {
-                        break;
-                    }
-                }
-            } else {
-                if (byY.compare(t, cur.value) >= 0) {
-                    if (cur.left_up != null) {
-                        cur = cur.left_up;
-                    } else {
-                        break;
-                    }
-                } else {
-                    if (cur.left_down != null) {
-                        cur = cur.left_down;
-                    } else {
-                        break;
-                    }
-                }
-            }
-        }
-        if (prev.left_down.value == t) {
-            prev.left_down = null;
-            return true;
-        } else if (prev.left_up.value == t) {
-            prev.left_up = null;
-            return true;
-        } else if (prev.right_up.value == t) {
-            prev.right_up = null;
-            return true;
-        } else if (prev.right_down.value == t) {
-            prev.right_down = null;
+        if (root == null) {
+            return false;
+        } else if (t.equals(root.value)) {
+            root = null;
             return true;
         } else {
-            return false;
+            QTreeNode cur = root;
+            QTreeNode prev = null;
+            while (!t.equals(cur.value)) {
+                prev = cur;
+                if (byX.compare(t, cur.value) >= 0) {
+                    if (byY.compare(t, cur.value) >= 0) {
+                        cur = cur.right_up;
+                    } else {
+                        cur = cur.right_down;
+                    }
+                } else {
+                    if (byY.compare(t, cur.value) >= 0) {
+                        cur = cur.left_up;
+                    } else {
+                        cur = cur.left_down;
+                    }
+                }
+                if (cur == null) {
+                    break;
+                }
+            }
+
+            if (prev.left_down != null && t.equals(prev.left_down.value)) {
+                prev.left_down = null;
+                return true;
+            } else if (prev.left_up != null && t.equals(prev.left_up.value)) {
+                prev.left_up = null;
+                return true;
+            } else if (prev.right_up != null && t.equals(prev.right_up.value)) {
+                prev.right_up = null;
+                return true;
+            } else if (prev.right_down != null && t.equals(prev.right_down.value)) {
+                prev.right_down = null;
+                return true;
+            } else {
+                return false;
+            }
         }
     }
 
